@@ -12,13 +12,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Provider 04',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider(
+      create: (context) => Dog(name: 'dog05', breed: 'breed05', age: 3),
+      child: MaterialApp(
+        title: 'Provider 04',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }
@@ -33,20 +36,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final dog = Dog(name: 'dog03', breed: 'breed03');
 
-  void initState() {
-    super.initState();
-    dog.addListener(dogListener);
-  }
-
-  void dogListener() {
-    print('age listner: ${dog.age}');
-  }
-
-  void dispose() {
-    dog.removeListener(dogListener);
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '- name : ${Provider.of<Dog>(context, listen: false).name} ',
+              '- name : ${context.watch<Dog>().name} ',
               style: TextStyle(
                 fontSize: 20.0,
               ),
@@ -83,7 +72,7 @@ class BreedAndAge extends StatelessWidget {
     return Column(
       children: [
         Text(
-          '- breed: ${Provider.of<Dog>(context, listen: false).breed}',
+          '- breed: ${context.select<Dog, String>((Dog dog) => dog.breed)}',
           style: TextStyle(
             fontSize: 20.0,
           ),
